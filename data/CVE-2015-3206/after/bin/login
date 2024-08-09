@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+##
+# Copyright (c) 2008 Jelmer Vernooij <jelmer@samba.org>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""A sample script showing how to verify a user with username and password."""
+
+import argparse
+import getpass
+import kerberos
+import sys
+
+
+def main():
+    # construct arg parser
+    parser = argparse.ArgumentParser(description='Verify Kerberos login.')
+    parser.add_argument('--service', default='', help='the service to authenticate as')
+    parser.add_argument('--default_realm', default='', help='the realm to use if none is provided in the username')
+    parser.add_argument('--verify', default=False, action='store_true', help='the realm to use if none is provided in the username')
+    parser.add_argument('user', metavar='user', help='the username to verify')
+    args = parser.parse_args()
+
+    print args.service
+
+    # get the password
+    password = getpass.getpass('Password: ')
+
+    # verify
+    try:
+        kerberos.checkPassword(args.user, password, args.service, args.default_realm, args.verify)
+        print "Successfully verified"
+    except kerberos.BasicAuthError as e:
+        print "{0} ({1})".format(*e.args)
+
+if __name__ == "__main__":
+    main()

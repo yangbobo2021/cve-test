@@ -1,0 +1,4 @@
+build/
+dist/
+pykerberos.egg-info/
+/kerberos.so
